@@ -1,0 +1,87 @@
+---
+title: "Assignment 2: UW Grade Distribution Part 1"
+author: "Zhihang Mai"
+date: today
+format:
+  html:
+   embed-resources: true
+---
+
+## Loading Data
+
+```{r}
+# Code to load grade distribution data files:
+
+# Data originally from reddit user austingwalters in this reddit thread: https://www.reddit.com/r/udub/comments/4e6kxl/i_made_a_website_that_shows_grade_distributions/
+# Dataset and 2016 FOIA request info from their dropbox: https://www.dropbox.com/scl/fo/8lbyazjlt5jmv86jvvs06/AGtgMaWeyZtZuS2fSYLYn_4?dl=0&e=1&rlkey=1sg7t372nhslxogwjl3e9lt9t
+
+astbio_grades_df <- read.csv("https://raw.githubusercontent.com/kylethayer/Info-201-au-24-datasets/refs/heads/main/ASTBIO_grades_2016.csv")
+biol_grades_df <- read.csv("https://raw.githubusercontent.com/kylethayer/Info-201-au-24-datasets/refs/heads/main/BIOL_grades_2016.csv")
+cse_grades_df <- read.csv("https://raw.githubusercontent.com/kylethayer/Info-201-au-24-datasets/refs/heads/main/CSE_grades_2016.csv")
+dance_grades_df <- read.csv("https://raw.githubusercontent.com/kylethayer/Info-201-au-24-datasets/refs/heads/main/DANCE_grades_2016.csv")
+design_grades_df <- read.csv("https://raw.githubusercontent.com/kylethayer/Info-201-au-24-datasets/refs/heads/main/DESIGN_grades_2016.csv")
+info_grades_df <- read.csv("https://raw.githubusercontent.com/kylethayer/Info-201-au-24-datasets/refs/heads/main/INFO_grades_2016.csv")
+```
+
+## Program Summaries
+
+```{r}
+library(dplyr)
+
+# Program 1: Informatics
+info_num_class <- nrow(info_grades_df)
+info_avg_student_count <- info_grades_df |>
+  pull(Student_Count) |>
+  mean(na.rm = TRUE) |>
+  round(2)
+info_sum_student_count <-info_grades_df |>
+  pull(Student_Count) |>
+  sum(na.rm = TRUE)
+info_min_gpa <- info_grades_df |>
+  pull(Average_GPA) |>
+  min(na.rm = TRUE)
+info_mean_gpa <- info_grades_df |>
+  pull(Average_GPA) |>
+  mean(na.rm = TRUE) |>
+  round(2)
+info_max_gpa <- info_grades_df |>
+  pull(Average_GPA) |>
+  max(na.rm = TRUE)
+
+# Program 2: Biology
+biol_num_class <- nrow(biol_grades_df)
+biol_avg_student_count <- biol_grades_df |>
+  pull(Student_Count) |>
+  mean(na.rm = TRUE) |>
+  round(2)
+biol_sum_student_count <-biol_grades_df |>
+  pull(Student_Count) |>
+  sum(na.rm = TRUE)
+biol_min_gpa <- biol_grades_df |>
+  pull(Average_GPA) |>
+  min(na.rm = TRUE)
+biol_mean_gpa <- biol_grades_df |>
+  pull(Average_GPA) |>
+  mean(na.rm = TRUE) |>
+  round(2)
+biol_max_gpa <- biol_grades_df |>
+  pull(Average_GPA) |>
+  max(na.rm = TRUE)
+```
+
+### Informatics
+
+For the informatics program, there are **(a) `r info_num_class`** total class records. Just like the other program, this counts classes each time they are listed (e.g., across different quarters) rather than representing `r info_num_class` unique courses. The average number of students in an INFO class record is **(b) `r info_avg_student_count`**, and the total sum of the Student_Count column is **(c) `r info_sum_student_count`**. Because this sum adds up every class record, it double-counts students who enrolled in multiple INFO courses. Therefore, it represents total student course-takings, not unique individuals. Regarding the Average_GPA column, the minimum is **(d) `r info_min_gpa`**, the maximum is **(e) `r info_max_gpa`**, and the mean is **(f) `r info_mean_gpa`**. The minimum of `r info_min_gpa` suggests that there is an outlier class that was likely challenging or graded strictly compared to the rest. The maximum of `r info_max_gpa` points to a class where the average GPA was prefect, which often happens in very small classes where every single students earns an A.
+
+### Biology
+For the biology program, there are  **(a) `r biol_num_class`** total class records. This number counts every time a class was offered (e.g., in different quarters), meaning the same course could be counted multiple times. The average number of students per class record is **(b) `r biol_avg_student_count`**, and the total sum of students across all records is **(c) `r biol_sum_student_count`**. It is important to note that this total student sum double-counts students; if an individual took more than one BIOL class, they are counted multiple times in this total, so it reflects total enrollment seats filled rather than the number of unique students. When looking at the Average_GPA, the minimum is **(d) `r biol_min_gpa`**, the maximum is **(e) `r biol_max_gpa`**, and the overall mean is **(f) `r biol_mean_gpa`**. The minimum of `r biol_min_gpa` indicates that there is at least one unusual or particularly difficult class where the average grade was quite low. Conversely, the maximum of `r biol_max_gpa` likely represents a class where every students received an 4.0, which could point to a highly prepared group of students, or a specific grading policy (e.g., graded research).
+
+## Compare Programs
+Comparing the Biology and Informatics program reveals some clear differences in class size, enrollment, and grading patterns. BIOL is a significantly larger program by volume, with `r biol_num_class` class records compared to INFO's `r info_num_class`. Not only does BIOL have more class sections, but its classes are also larger on average (`r biol_avg_student_count` students per BIOL class vs. `r info_avg_student_count` in INFO), resulting in a massive differences in total student course-takings (`r biol_sum_student_count` for BIOL vs. `r info_sum_student_count` for INFO). When looking at grading, INFO appears to be slightly easier to achieve high grades in overall, as it has a higher mean average GPA (`r info_mean_gpa`) compared to BIOL (`r biol_mean_gpa`). BIOL also has a lower minimum average GPA (`r biol_min_gpa` vs. `r info_min_gpa`), suggesting that the most difficult BIOL class is much harsher than the most difficult INFO class. Both programs shares a maximum average GPA of `r info_max_gpa`, indicating that both have specific classes where every student earned an A+. Overall, BIOL is a much larger, more heavily enrolled program with lower average grades, while INFO is smaller and tends to have higher average grades. This difference in grading and program size may be because the BIOL program includes many foundational STEM prerequisite courses, which often have large enrollments and are graded more strictly to filter or prepare students for advanced science tracks.
+
+## Two New Questions
+### Question 1: Course-Level Difficulty vs. Class Size
+For the classes that have unusually low average GPAs (like the BIOL class with a 2.1 average), what are their specific student counts? Are the lowest-graded classes typically the largest lecture halls, or do some small, upper-level courses also suffer from low averages?
+
+### Question 2: Grade Distribution Patterns Across Quarters
+Since the data includes the same courses offered in different quarters, how does the average GPA for a specific class fluctuate from quarter to quarter? Does taking a class in a specific quarter (e.g., Fall vs. Spring) or with a specific number of enrolled students significantly change the average grade given?
